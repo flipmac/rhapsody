@@ -23,5 +23,10 @@ rhapsody.use("moduleName", function(m) {
 });
 ```
 
+Testing
+---
+
+It also contains a testing framework called rhapsody test. You can run the tests by opening /test/[some]TestSuite.html in a browser.
+
 
 
