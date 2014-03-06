@@ -113,4 +113,37 @@ testRhapsody("test polly array each", function (tester) {
 		}
 	});
 
+	testRhapsody("test native trim", function (tester) {
+
+		tester.addStep(function (Asserts) {
+
+			rhapsody.use(["rhapsody.compat"], function (compat) {
+				Asserts.assert('trim(" ").length === 0', compat.trim(" ").
+						length === 0);
+			});
+
+		});
+
+	});
+
+	testRhapsody("test polly trim", function (tester) {
+
+		var oldTrim;
+
+		tester.addStep(function (Asserts) {
+			oldTrim = String.prototype.trim;
+			rhapsody.use(["rhapsody.compat"], function (compat) {
+
+				Asserts.assert('trim(" ").length === 0', compat.trim(" ").
+						length === 0);
+			});
+		}).tearDown(function () {
+			if (oldTrim) {
+				String.prototype.trim = oldTrim;
+			}
+		});
+
+	});
+
+
 });

@@ -131,7 +131,7 @@ rhapsody.define("rhapsody.compat", function (Arrays) {
         return str;
     }
 
-    trim = trim in "" ? function (str) {
+    trim = "".trim ? function (str) {
         return checkString(str).trim();
     } : function (str) {
         return checkString(str).replace(/^\s+|\s+$/, "");
