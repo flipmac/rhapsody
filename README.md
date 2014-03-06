@@ -11,13 +11,17 @@ rhapsody.define("moduleName", function () {
            //  ... do something
         }
     };
-});`
+});
+```
 
 
 and then you can use the module as:
+
 ```javascript
 rhapsody.use("moduleName", function(m) {
   m.someMethod();
-});`
+});
+```
+
 
 
