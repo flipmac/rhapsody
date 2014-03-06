@@ -5,7 +5,7 @@ This is a "loosely coupled module dependency" framework. The idea is that you ca
 
 ```javascript
 
-`rhapsody.define("moduleName", function () {
+rhapsody.define("moduleName", function () {
     return {
         someMethod: function () {
            //  ... do something
@@ -15,8 +15,8 @@ This is a "loosely coupled module dependency" framework. The idea is that you ca
 
 
 and then you can use the module as:
-
-`rhapsody.use("moduleName", function(m) {
+```javascript
+rhapsody.use("moduleName", function(m) {
   m.someMethod();
 });`
 
