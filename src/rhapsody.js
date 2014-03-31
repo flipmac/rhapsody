@@ -1,14 +1,19 @@
 /*jslint nomen: true, plusplus: true */
-var rhapsody = (function (win) {
+var rhapsody = (function () {
     "use strict";
 
     var _publ,
+
         _modules = {},
+
         _moduleDefs = {},
+
         _moduleUsers = {},
+
         _isArray = function (obj) {
             return Object.prototype.toString.call(obj) === "[object Array]";
         },
+
         _each = function (arr, func, thisArg) {
             var i, len;
 
@@ -19,23 +24,28 @@ var rhapsody = (function (win) {
                  */
                 throw new TypeError(arr + " is not an array");
             }
+
             if (typeof arr.forEach === "function") {
                 arr.forEach(func, thisArg);
             } else {
+
                 if (typeof func !== "function") {
                     throw new TypeError(func + " is not a function");
                 }
+
                 for (i = 0, len = arr.length; i < len; i++) {
                     func.call(thisArg, arr[i], i, arr);
                 }
             }
         },
+
         _map = function (arr, func, thisArg) {
             var res;
 
             if (typeof arr.map === "function") {
                 return arr.map(func, thisArg);
             }
+
             if (typeof func !== "function") {
                 throw new TypeError(func + " is not a function");
             }
@@ -45,12 +55,14 @@ var rhapsody = (function (win) {
             }, thisArg);
             return res;
         },
+
         _initModuleNoCheck = function (def) {
-            var module = def.init.call(win, _publ);
+            var module = def.init.call(undefined, _publ);
 
             _modules[def.name] = module;
             return module;
         },
+
         _initModule = function (def) {
             var module = _modules[def.name];
 
@@ -59,6 +71,7 @@ var rhapsody = (function (win) {
             }
             return module;
         },
+
         _getModule = function (moduleName) {
             var module = _modules[moduleName];
 
@@ -67,6 +80,7 @@ var rhapsody = (function (win) {
             }
             return _initModuleNoCheck(_moduleDefs[moduleName]);
         },
+
         _notifyUsers = function (moduleName) {
             var users = _moduleUsers[moduleName];
 
@@ -78,8 +92,9 @@ var rhapsody = (function (win) {
                 user.requestLength--;
 
                 if (user.requestLength === 0) {
+
                     (function (user) {
-                        win.setTimeout(function () {
+                        setTimeout(function () {
                             var modules = _map(user.requests, _getModule);
 
                             user.callback.apply(user.scope, modules);
@@ -87,8 +102,10 @@ var rhapsody = (function (win) {
                             // delete the user from the moduleUsers
                             _each(user.requests, function (moduleName) {
                                 var users = _moduleUsers[moduleName];
+
                                 if (users !== undefined) {
                                     users.splice(users.indexOf(user), 1);
+
                                     if (users.length === 0) {
                                         delete _moduleUsers[moduleName];
                                     }
@@ -99,7 +116,6 @@ var rhapsody = (function (win) {
                     }(user));
                 }
             });
-
         };
 
     /*
@@ -127,15 +143,12 @@ var rhapsody = (function (win) {
         define: function (moduleName, moduleDef, modulesToUse) {
             var def;
 
-            checkArgument("moduleName has to be a non " +
-                    "empty string", typeof moduleName === "string" &&
-                    moduleName.length > 0);
-
+            checkArgument("moduleName has to be a non empty string", typeof
+                    moduleName === "string" && moduleName.length > 0);
             checkArgument("Module <" + moduleName + "> is already defined.",
-                _moduleDefs[moduleName] === undefined);
-
-            checkArgument("module definition has to be a function",
-                typeof moduleDef === "function");
+                    _moduleDefs[moduleName] === undefined);
+            checkArgument("module definition has to be a function", typeof
+                    moduleDef === "function");
 
             if (modulesToUse === undefined) {
                 def = {
@@ -145,14 +158,14 @@ var rhapsody = (function (win) {
                 _moduleDefs[moduleName] = def;
                 _notifyUsers(moduleName, def);
             } else {
-                checkArgument("modulesToUse must be an array",
-                        _isArray(modulesToUse));
+                checkArgument("modulesToUse must be an array", _isArray(
+                        modulesToUse));
 
                 _publ.use(modulesToUse, function () {
                     var args = arguments;
 
                     _publ.define(moduleName, function () {
-                        return moduleDef.apply(win, args);
+                        return moduleDef.apply(undefined, args);
                     });
                 });
             }
@@ -166,8 +179,10 @@ var rhapsody = (function (win) {
         },
 
         use: function (moduleNames, callback, scope) {
-            var moduleDef, moduleNamesCopy, users, user,
+            var moduleNamesCopy, users, user,
                 existingModuleDefs = [],
+                modulesToRequest = [],
+                containsAsync = false,
                 usersModules = [];
 
             if (typeof moduleNames === "string") {
@@ -180,7 +195,6 @@ var rhapsody = (function (win) {
             checkArgument("specify callback as a function <" + callback + ">",
                     typeof callback === "function");
 
-            scope = scope || win;
             moduleNamesCopy = moduleNames.slice();
             user = {
                 requests: moduleNamesCopy,
@@ -190,9 +204,14 @@ var rhapsody = (function (win) {
             };
 
             _each(moduleNames, function (moduleName) {
-                moduleDef = _moduleDefs[moduleName];
+                var moduleDef = _moduleDefs[moduleName];
+
+                if (moduleName === "rhapsody._async") {
+                    containsAsync = true;
+                }
 
                 if (!moduleDef) {
+                    modulesToRequest.push(moduleName);
                     users = _moduleUsers[moduleName];
 
                     if (!users) {
@@ -211,6 +230,16 @@ var rhapsody = (function (win) {
                 callback.apply(scope, usersModules);
             } else {
                 user.requestLength -= existingModuleDefs.length;
+
+                /*
+                 * if none of the modules requested is "rhapsody._async"
+                 * and async loading is supported.
+                 */
+                if (!containsAsync && rhapsody.defineBundles) {
+                    rhapsody.use("rhapsody._async", function (async) {
+                        async(modulesToRequest);
+                    });
+                }
             }
 
         }
@@ -222,11 +251,14 @@ var rhapsody = (function (win) {
      */
     _publ.define("rhapsody.arrays", function () {
         return {
+
             forEach: _each,
+
             map: _map,
+
             isArray: _isArray
         };
     });
 
     return _publ;
-}(window));
+}());

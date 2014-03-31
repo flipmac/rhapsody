@@ -10,7 +10,7 @@ testRhapsody("package exist", function (tester) {
         rhapsody.use(module, function (Events) {
             e = Events;
         });
-        Asserts.assert("e !== undefined", e !== undefined);
+        Asserts.isTrue("e !== undefined", e !== undefined);
     });
 
 });
@@ -46,17 +46,17 @@ testRhapsody("test on", function (tester) {
                 });
 
         }).addStep(function (Asserts) {
-            Asserts.assert("typeof savedResult === 'object'",
+            Asserts.isTrue("typeof savedResult === 'object'",
                     typeof savedResult === "object");
-            Asserts.assertEquals("savedResult.message === '" + message +
+            Asserts.isEqual("savedResult.message === '" + message +
                         "'", message, savedResult.message);
-            Asserts.assert("typeof savedResult.data === 'object'",
+            Asserts.isTrue("typeof savedResult.data === 'object'",
                     typeof savedResult.data === "object");
-            Asserts.assertEquals("savedResult.data.userId === userId", userId,
+            Asserts.isEqual("savedResult.data.userId === userId", userId,
                     savedResult.data.userId);
-            Asserts.assertEquals("savedResult.data.userName === userName", userName,
+            Asserts.isEqual("savedResult.data.userName === userName", userName,
                     savedResult.data.userName);
-            Asserts.assert("savedError === null", savedError === null);
+            Asserts.isTrue("savedError === null", savedError === null);
         }).tearDown(function () {
             Events.deleteEvent("ADD_USER");
         });

@@ -12,7 +12,7 @@ testRhapsody("test polly bind", function (tester) {
 			}, {a: 1}, 2, 3);
 		});
 	}).addStep(function (Asserts) {
-		Asserts.assertEquals("f() === 6", 6, f());
+		Asserts.isEqual("f() === 6", 6, f());
 	}).tearDown(function () {
 		Function.prototype.bind = oldBind;
 	});
@@ -29,7 +29,7 @@ testRhapsody("test native bind", function (tester) {
 			}, {a: 1}, 2, 3);
 		});
 	}).addStep(function (Asserts) {
-		Asserts.assertEquals("f() === 6", 6, f());
+		Asserts.isEqual("f() === 6", 6, f());
 	});
 
 });
@@ -45,12 +45,12 @@ testRhapsody("test object each", function (tester) {
 	tester.addStep(function (Asserts) {
 		rhapsody.use(["rhapsody.compat"], function (Utils) {
 			Utils.forEach(obj, function (value, name, obj2) {
-				Asserts.assert("obj === obj2", obj === obj2);
-				Asserts.assert("value === obj2[name]", value === obj2[
+				Asserts.isTrue("obj === obj2", obj === obj2);
+				Asserts.isTrue("value === obj2[name]", value === obj2[
 						name]);
-				Asserts.assert("this === scope", this === scope);
+				Asserts.isTrue("this === scope", this === scope);
 			}, scope);
-		});
+		});@
 	});
 });
 
@@ -60,10 +60,10 @@ testRhapsody("test object each error", function (tester) {
 
 	tester.addStep(function (Asserts) {
 		rhapsody.use(["rhapsody.compat"], function (Utils) {
-			Asserts.assert("isFailure: Utils.forEach(obj, obj, obj)", Asserts.
+			Asserts.isTrue("isFailure: Utils.forEach(obj, obj, obj)", Asserts.
 					isFailure(Utils.forEach, [obj, obj, obj], rhapsody.
 						RhapsodyError));
-			Asserts.assert("isFailure: Utils.forEach(1, function, obj)", Asserts.
+			Asserts.isTrue("isFailure: Utils.forEach(1, function, obj)", Asserts.
 					isFailure(Utils.forEach, [1, function () {}, obj], rhapsody.
 						RhapsodyError));
 		});
@@ -79,9 +79,9 @@ testRhapsody("test native array each", function (tester) {
 	tester.addStep(function (Asserts) {
 		rhapsody.use(["rhapsody.compat"], function (Utils) {
 			Utils.forEach(arr, function (value, index, arr2) {
-				Asserts.assert("arr === arr2", arr === arr2);
-				Asserts.assert("value === arr2[index]", value === arr2[index]);
-				Asserts.assert("this === scope", this === scope);
+				Asserts.isTrue("arr === arr2", arr === arr2);
+				Asserts.isTrue("value === arr2[index]", value === arr2[index]);
+				Asserts.isTrue("this === scope", this === scope);
 			}, scope);
 		});
 	});
@@ -102,9 +102,9 @@ testRhapsody("test polly array each", function (tester) {
 
 		rhapsody.use(["rhapsody.compat"], function (Utils) {
 			Utils.forEach(arr, function (value, index, arr2) {
-				Asserts.assert("arr === arr2", arr === arr2);
-				Asserts.assert("value === arr2[index]", value === arr2[index]);
-				Asserts.assert("this === scope", this === scope);
+				Asserts.isTrue("arr === arr2", arr === arr2);
+				Asserts.isTrue("value === arr2[index]", value === arr2[index]);
+				Asserts.isTrue("this === scope", this === scope);
 			}, scope);
 		});
 	}).tearDown(function () {
@@ -118,7 +118,7 @@ testRhapsody("test polly array each", function (tester) {
 		tester.addStep(function (Asserts) {
 
 			rhapsody.use(["rhapsody.compat"], function (compat) {
-				Asserts.assert('trim(" ").length === 0', compat.trim(" ").
+				Asserts.isTrue('trim(" ").length === 0', compat.trim(" ").
 						length === 0);
 			});
 
@@ -134,7 +134,7 @@ testRhapsody("test polly array each", function (tester) {
 			oldTrim = String.prototype.trim;
 			rhapsody.use(["rhapsody.compat"], function (compat) {
 
-				Asserts.assert('trim(" ").length === 0', compat.trim(" ").
+				Asserts.isTrue('trim(" ").length === 0', compat.trim(" ").
 						length === 0);
 			});
 		}).tearDown(function () {

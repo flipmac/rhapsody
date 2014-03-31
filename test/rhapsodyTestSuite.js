@@ -9,12 +9,12 @@ testRhapsody("testRhapsodyTest", function (t) {
 			b = 1;
 		}, 0)
 	}).addStep(function (a) {
-		a.assert("b === 1", b === 1);
+		a.isTrue("b === 1", b === 1);
 	}).tearDown(function () {
 		b == null;
 	});
 
-}); 
+});
 
 testRhapsody("module use", function (tester) {
 
@@ -36,13 +36,13 @@ testRhapsody("module use", function (tester) {
 		});
 
 		rhapsody.use(["module1", "module2"], function (m1, m2) {
-			T.assert("m1.m() === 'a'", m1.m() === "a");
-			T.assert("m2.m() === 'b'", m2.m() === "b");
+			T.isTrue("m1.m() === 'a'", m1.m() === "a");
+			T.isTrue("m2.m() === 'b'", m2.m() === "b");
 		});
 	}).tearDown(function () {
 		rhapsody.undefine("module1", "module2");
 	});
-	
+
 });
 
 
@@ -55,7 +55,7 @@ testRhapsody("async module use", function (tester) {
 			wasExecuted = true;
 		});
 	}).addStep(function (t) {
-		t.assert("!wasExecuted", !wasExecuted);
+		t.isTrue("!wasExecuted", !wasExecuted);
 	}).tearDown(function () {
 		rhapsody.undefine("module1");
 	});
@@ -75,7 +75,7 @@ testRhapsody("async module use2", function (tester) {
 			return {};
 		});
 	}).addStep(function (t) {
-		t.assert("wasExecuted", wasExecuted);
+		t.isTrue("wasExecuted", wasExecuted);
 	}).tearDown(function () {
 		rhapsody.undefine("module1");
 	});
@@ -96,22 +96,22 @@ testRhapsody("async module use 3", function (tester) {
 		rhapsody.define(module1Name, function () {
 			return {};
 		});
-		t.assert("shouldn't be executed yet.", !executed);
+		t.isTrue("shouldn't be executed yet.", !executed);
 		rhapsody.define(module2Name, function () {
 			return {};
 		});
 	}).addStep(function (t) {
-		t.assert("should have been executed", executed);
+		t.isTrue("should have been executed", executed);
 	}).tearDown(function () {
 		rhapsody.undefine(module1Name, module2Name);
-	});	
+	});
 
 });
 
 
 testRhapsody("async module use 4", function (tester) {
-		var user1Values = null, 
-		user2Values = null, 
+		var user1Values = null,
+		user2Values = null,
 		user3Values = null,
 		module1Name = "m1",
 		module2Name = "m2",
@@ -144,30 +144,30 @@ testRhapsody("async module use 4", function (tester) {
 			return module1;
 		});
 	}).addStep(function (t) {
-		t.assertNull("user1Values should be null", user1Values);
-		t.assertNull("user2Values should be null", user2Values);
-		t.assertNull("user3Values should be null", user3Values);
+		t.isNull("user1Values should be null", user1Values);
+		t.isNull("user2Values should be null", user2Values);
+		t.isNull("user3Values should be null", user3Values);
 	}).addStep(function (t) {
 		rhapsody.define(module2Name, function () {
 			return module2;
 		});
 	}).addStep(function (t) {
-		t.assertEquals("user1Values should be ", {
+		t..isEqual(("user1Values should be ", {
 			module1: module1,
 			module2: module2
 		}, user1Values);
-		t.assertNull("user2Values should still be null", user2Values);
-		t.assertNull("user3Values should still be null", user3Values);
+		t.isNull("user2Values should still be null", user2Values);
+		t.isNull("user3Values should still be null", user3Values);
 	}).addStep(function (t) {
 		rhapsody.define(module3Name, function () {
 			return module3;
 		});
 	}).addStep(function (t) {
-		t.assertEquals("user2Values should be something else", {
+		t..isEqual(("user2Values should be something else", {
 			module2: module2,
 			module3: module3
 		}, user2Values);
-		t.assertEquals("user3Values hsould be something else", {
+		t..isEqual(("user3Values hsould be something else", {
 			module3: module3,
 			module1: module1
 		}, user3Values);
@@ -187,7 +187,7 @@ testRhapsody("no module name", function (tester) {
 			rhapsody.define("", function () {});
 		}, rhapsody.RhapsodyError);
 	}).addStep(function (t) {
-		t.assert("Expected creating module with empty name to fail", 
+		t.isTrue("Expected creating module with empty name to fail",
 				failed);
 	}).tearDown(function () {
 		if (!failed) {
@@ -205,7 +205,7 @@ testRhapsody("null module", function (tester) {
 			rhapsody.define("module", null);
 		}, rhapsody.RhapsodyError);
 	}).addStep(function (t) {
-		t.assert("Expected creating module with null to fail", 
+		t.isTrue("Expected creating module with null to fail",
 			failed);
 	}).tearDown(function () {
 		if (!failed) {
@@ -216,7 +216,7 @@ testRhapsody("null module", function (tester) {
 });
 
 testRhapsody("duplicate name", function (tester) {
-	var dupName = "dup", 
+	var dupName = "dup",
 		failed = false;
 
 	tester.addStep(function () {
@@ -226,11 +226,11 @@ testRhapsody("duplicate name", function (tester) {
 			rhapsody.define(dupName, function () {});
 		}, rhapsody.RhapsodyError);
 	}).addStep(function (t) {
-		t.assert("Expected creating dup name to fail", failed);
+		t.isTrue("Expected creating dup name to fail", failed);
 	}).tearDown(function () {
 		rhapsody.undefine("dup");
 	});
-	
+
 });
 
 testRhapsody("two users", function (tester) {
@@ -255,8 +255,8 @@ testRhapsody("two users", function (tester) {
 		});
 
 	}).addStep(function (t) {
-		t.assert("expected savedValue1 to be true", savedValue1 === true);
-		t.assert("expected savedValue2 to be true", savedValue2 === true);
+		t.isTrue("expected savedValue1 to be true", savedValue1 === true);
+		t.isTrue("expected savedValue2 to be true", savedValue2 === true);
 	}).tearDown(function () {
 		rhapsody.undefine(moduleName);
 	});
@@ -264,7 +264,7 @@ testRhapsody("two users", function (tester) {
 });
 
 testRhapsody("is not reinited", function (tester) {
-	var inited = 0, 
+	var inited = 0,
 		moduleName = "m1";
 
 	tester.addStep(function () {
@@ -277,7 +277,7 @@ testRhapsody("is not reinited", function (tester) {
 		rhapsody.use(moduleName, function () {});
 		rhapsody.use(moduleName, function () {});
 	}).addStep(function (t) {
-		t.assertEquals(1, inited);
+		t..isEqual((1, inited);
 	}).tearDown(function () {
 		rhapsody.undefine(moduleName);
 	});
@@ -333,17 +333,17 @@ testRhapsody("moduleUseExt", function (tester) {
 
 testRhapsody("rhapsodyArrays", function (tester) {
 
-	var arr = [1, 2, 3, 4],	
+	var arr = [1, 2, 3, 4],
 		exp = "1234",
 		str = "";
 	tester.addStep(function () {
 		rhapsody.use(["rhapsody.arrays"], function (Arrays) {
-			Arrays.each(arr, function (x) {
+			Arrays.forEach(arr, function (x) {
 				str += x;
 			});
 		});
 	}).addStep(function (Asserts) {
-		Asserts.assertEquals(exp, str);
+		Asserts..isEqual((exp, str);
 	}).tearDown(function () {});
 });
 
@@ -352,7 +352,7 @@ testRhapsody("define and use", function (tester) {
 	var savedMessage;
 
 	tester.addStep(function () {
-		
+
 		rhapsody.define("y", function () {
 			return {
 				message: "z"
@@ -370,7 +370,7 @@ testRhapsody("define and use", function (tester) {
 		});
 
 	}).addStep(function (Asserts) {
-		Asserts.assertEquals("expected savedMessage === 'z'", "z", 
+		Asserts..isEqual(("expected savedMessage === 'z'", "z",
 			savedMessage);
 	}).tearDown(function () {
 		rhapsody.undefine("x", "y");
