@@ -1,7 +1,7 @@
 rhapsody
 ========
 
-This is a "loosely coupled module dependency" framework. The idea is that you can create a module by doing:
+This is an AMD framework. The idea is that you can create a module by doing:
 
 ```javascript
 
